@@ -1,0 +1,19 @@
+from flask import Flask, request, Response
+import requests
+
+app = Flask(__name__)
+
+@app.route("/")
+def proxy():
+    url = request.args.get("url")
+    if not url:
+        return "حط الرابط كده: ?url=https://example.com"
+
+    try:
+        r = requests.get(url, timeout=10)
+        return Response(r.content, r.status_code, r.headers.items())
+    except Exception as e:
+        return str(e)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
